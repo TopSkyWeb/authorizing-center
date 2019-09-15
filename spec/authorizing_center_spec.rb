@@ -3,7 +3,8 @@ RSpec.describe AuthorizingCenter do
     expect(AuthorizingCenter::VERSION).not_to be nil
   end
 
-  it "does something useful" do
-    expect(false).to eq(true)
+  it "has a constant to record error code from UC center" do
+    expect(AuthorizingCenter::UC_GET_TICKET_ERROR_CODE).not_to be nil
+    expect(AuthorizingCenter::UC_GET_TICKET_ERROR_CODE.class).to be Hash
   end
 end
