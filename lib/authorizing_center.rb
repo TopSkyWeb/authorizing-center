@@ -15,13 +15,13 @@ module AuthorizingCenter
 
   # Uc Center Endpoint
   mattr_accessor :uc_center_endpoint
-  @@uc_center_endpoint = 'http://test.com'
+  @@uc_center_endpoint = nil
 
   mattr_accessor :uc_center_encrypt_key
-  @@uc_center_encrypt_key = 'test'
+  @@uc_center_encrypt_key = nil
 
   mattr_accessor :ininder_endpoint
-  @@ininder_endpoint = 'http://test.com'
+  @@ininder_endpoint = nil
 
   def self.setup
     yield self

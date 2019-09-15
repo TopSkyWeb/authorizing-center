@@ -1,4 +1,7 @@
 RSpec.describe AuthorizingCenter::Ininder do
+  before(:each) do
+    AuthorizingCenter.ininder_endpoint = 'https://test.com'
+  end
   it 'will return false when request respond 403 , username or password is wrong' do
     stub_request(:post, AuthorizingCenter.ininder_endpoint + '/api/v1/admin/login').
         with(body: {account: :foo, password: :bar}.to_query).

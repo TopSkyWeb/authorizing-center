@@ -1,6 +1,8 @@
 RSpec.describe AuthorizingCenter::UcCenter do
   before(:each) do
     allow(AuthorizingCenter::UcCenter).to receive(:encrypt).and_return('foobar')
+    AuthorizingCenter.uc_center_endpoint = 'https://test.com'
+    AuthorizingCenter.uc_center_encrypt_key = 'foobar'
   end
   let(:username) {:foo}
   it 'should return false when request respond 200 but body include error code, username or password is wrong' do
