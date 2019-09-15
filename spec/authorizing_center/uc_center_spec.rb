@@ -26,7 +26,7 @@ RSpec.describe AuthorizingCenter::UcCenter do
         'status' => Faker::Number.between(from: 1, to: 3),
         'name' => Faker::Name.name
     }
-    stub_request(:get, AuthorizingCenter.uc_center_endpoint+"?#{{a: 'userinfo', m: 'api', username: username}.to_query}").
+    stub_request(:get, AuthorizingCenter.uc_center_endpoint + "?#{{a: 'userinfo', m: 'api', username: username}.to_query}").
         to_return(status: 200, body: user_information.to_json)
     expect(AuthorizingCenter::UcCenter.user_information(username)).to eq user_information
   end
