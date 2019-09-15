@@ -1,8 +1,9 @@
+require "symmetric-encryption"
 module AuthorizingCenter
   # Checks the scope in the given environment and returns the associated failure app.
   module UcCenter
     def self.authorize?(username, password)
-      site = AuthorizingCenter.uc_center_endpoint
+      site = RestClient::Resource.new(AuthorizingCenter.uc_center_endpoint)
       string_wait_for_encrypt = {password: password, destime: Time.now.to_i}.to_query
       post_filed = {username: username, desurl: encrypt(string_wait_for_encrypt), m: 'api', a: 'getticket'}
       respond = site.post post_filed.to_query
@@ -15,8 +16,6 @@ module AuthorizingCenter
       user_info = JSON.parse respond.body
       user_info
     end
-
-    private
 
     def encrypt(str)
       iv = OpenSSL::Random.random_bytes(16)
