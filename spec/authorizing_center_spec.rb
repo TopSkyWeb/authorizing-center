@@ -1,3 +1,4 @@
+require 'spec_helper'
 RSpec.describe AuthorizingCenter do
   it "has a version number" do
     expect(AuthorizingCenter::VERSION).not_to be nil

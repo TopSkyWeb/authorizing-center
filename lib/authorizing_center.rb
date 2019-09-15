@@ -1,4 +1,6 @@
 require "authorizing_center/version"
+require "rest-client"
+require "rails"
 module AuthorizingCenter
   autoload :Ininder, 'authorizing_center/ininder'
   autoload :UcCenter, 'authorizing_center/uc_center'
@@ -12,13 +14,16 @@ module AuthorizingCenter
   }
 
   # Uc Center Endpoint
-  attr_accessor :uc_center_endpoint
-  @@uc_center_endpoint = nil
+  mattr_accessor :uc_center_endpoint
+  @@uc_center_endpoint = 'http://test.com'
 
-  attr_accessor :uc_center_encrypt_key
-  @@uc_center_encrypt_key = nil
+  mattr_accessor :uc_center_encrypt_key
+  @@uc_center_encrypt_key = 'test'
 
-  attr_accessor :ininder_endpoint
-  @@ininder_endpoint = nil
+  mattr_accessor :ininder_endpoint
+  @@ininder_endpoint = 'http://test.com'
 
+  def self.setup
+    yield self
+  end
 end

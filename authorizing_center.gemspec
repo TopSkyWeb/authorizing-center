@@ -35,10 +35,9 @@ Gem::Specification.new do |spec|
   spec.bindir        = "exe"
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
-
+  spec.files = Dir["lib/**/*","README.md"]
   spec.add_development_dependency "bundler", "~> 1.17"
   spec.add_development_dependency "rake", "~> 10.0"
-  spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency "rest-client", "~> 2.1.0"
   spec.add_development_dependency "symmetric-encryption", "~> 4.3.0"
 end

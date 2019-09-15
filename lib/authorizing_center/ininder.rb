@@ -3,7 +3,7 @@ module AuthorizingCenter
   class Ininder
     def self.authorize?(username, password)
       post_fields = {account: username, password: password}
-      site = AuthorizingCenter.ininder_endpoint
+      site = RestClient::Resource.new(AuthorizingCenter.ininder_endpoint)
       begin
         site['/api/v1/admin/login'].post post_fields.to_query
       rescue
