@@ -5,7 +5,7 @@ module AuthorizingCenter
     def self.authorize?(username, password)
       site = RestClient::Resource.new(AuthorizingCenter.uc_center_endpoint)
       string_wait_for_encrypt = {password: password, destime: Time.now.to_i}.to_query
-      post_filed = {username: username, desurl: encrypt(string_wait_for_encrypt), m: 'api', a: 'getticket'}
+      post_filed = {username: username, desurl: AuthorizingCenter::UcCenter.encrypt(string_wait_for_encrypt), m: 'api', a: 'getticket'}
       respond = site.post post_filed.to_query
       UC_GET_TICKET_ERROR_CODE.has_key?(respond.body) ? false : true
     end
@@ -17,7 +17,7 @@ module AuthorizingCenter
       user_info
     end
 
-    def encrypt(str)
+    def self.encrypt(str)
       iv = OpenSSL::Random.random_bytes(16)
       key = AuthorizingCenter.uc_center_encrypt_key.ljust(32, 0.chr)
       cipher = SymmetricEncryption::Cipher.new(key: key, iv: iv, encoding: :base64, always_add_header: false, cipher_name: 'aes-256-cbc')
