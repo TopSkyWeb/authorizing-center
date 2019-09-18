@@ -7,7 +7,12 @@ module AuthorizingCenter
       string_wait_for_encrypt = {password: password, destime: Time.now.to_i}.to_query
       post_filed = {username: username, desurl: AuthorizingCenter::UcCenter.encrypt(string_wait_for_encrypt), m: 'api', a: 'getticket'}
       respond = site.post post_filed.to_query
-      UC_GET_TICKET_ERROR_CODE.has_key?(respond.body) ? false : true
+      if UC_GET_TICKET_ERROR_CODE.has_key?(respond.body)
+        AuthorizingCenter.error_message = UC_GET_TICKET_ERROR_CODE[respond.body]
+        false
+      else
+        true
+      end
     end
 
     def self.user_information(username)

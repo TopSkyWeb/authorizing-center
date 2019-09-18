@@ -7,8 +7,8 @@ module AuthorizingCenter
 
   # UC Get Ticket API Error Code
   UC_GET_TICKET_ERROR_CODE = {
-      '-1' => '帐号不存在',
-      '-2' => '密码错误',
+      '-1' => '帐号或密码错误',
+      '-2' => '帐号或密码错误',
       '-3' => 'IP被封15分钟',
       '-4' => '帐号被停用'
   }
@@ -21,6 +21,9 @@ module AuthorizingCenter
   @@uc_center_encrypt_key = nil
 
   mattr_accessor :ininder_endpoint
+  @@ininder_endpoint = nil
+
+  mattr_accessor :error_message
   @@ininder_endpoint = nil
 
   def self.setup
