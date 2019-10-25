@@ -10,7 +10,8 @@ module AuthorizingCenter
       '-1' => '帐号或密码错误',
       '-2' => '帐号或密码错误',
       '-3' => 'IP被封15分钟',
-      '-4' => '帐号被停用'
+      '-4' => '帐号被停用',
+      'time out!' => '令牌逾时，请重新开启APP在尝试一次'
   }
 
   # Uc Center Endpoint
