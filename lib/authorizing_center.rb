@@ -1,6 +1,7 @@
 require "authorizing_center/version"
 require "rest-client"
 require "rails"
+require "rack"
 module AuthorizingCenter
   autoload :Ininder, 'authorizing_center/ininder'
   autoload :UcCenter, 'authorizing_center/uc_center'
