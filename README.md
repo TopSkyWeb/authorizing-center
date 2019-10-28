@@ -27,7 +27,7 @@ AuthorizingCenter::Ininder.authorize?(username, password)
 ```
 - Authorize Uc 
 ```ruby
-AuthorizingCenter::UcCenter.authorize?(username, password)
+AuthorizingCenter::UcCenter.authorize?(username, password, remote_ip)
 ```
 - Get User Information From account
 ```ruby

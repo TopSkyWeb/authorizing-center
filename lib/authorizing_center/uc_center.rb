@@ -2,9 +2,9 @@ require "symmetric-encryption"
 module AuthorizingCenter
   # Checks the scope in the given environment and returns the associated failure app.
   module UcCenter
-    def self.authorize?(username, password)
+    def self.authorize?(username, password, remote_ip)
       site = RestClient::Resource.new(AuthorizingCenter.uc_center_endpoint)
-      string_wait_for_encrypt = {password: password, destime: Time.now.to_i, ip: request.remote_ip}.to_query
+      string_wait_for_encrypt = {password: password, destime: Time.now.to_i, ip: remote_ip}.to_query
       post_filed = {username: username, desurl: AuthorizingCenter::UcCenter.encrypt(string_wait_for_encrypt), m: 'api', a: 'getticket'}
       respond = site.post post_filed.to_query
       if UC_GET_TICKET_ERROR_CODE.has_key?(respond.body)
