@@ -11,7 +11,11 @@ RSpec.describe AuthorizingCenter::Ininder do
   it 'will return true when request respond 200 , username or password is correct, and body will respond jwt token' do
     stub_request(:post, AuthorizingCenter.ininder_endpoint + '/api/v1/admin/login').
         with(body: {account: :foo, password: :bar}.to_query).
-        to_return(status: 200, body: Faker::String.random(length: 15))
-    expect(AuthorizingCenter::Ininder.authorize?('foo', 'bar')).to eq true
+        to_return(status: 200, body: {data: 'success'}.to_json)
+
+    stub_request(:get, AuthorizingCenter.ininder_endpoint + '/api/v1/internal/admin').
+      to_return(status: 200, body: {data: 'success'}.to_json)
+
+    expect(AuthorizingCenter::Ininder.authorize?('foo', 'bar')).to eq({data: 'success'}.as_json)
   end
 end

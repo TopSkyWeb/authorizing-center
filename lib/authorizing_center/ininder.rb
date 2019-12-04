@@ -5,11 +5,14 @@ module AuthorizingCenter
       post_fields = {account: username, password: password}
       site = RestClient::Resource.new(AuthorizingCenter.ininder_endpoint)
       begin
-        site['/api/v1/admin/login'].post post_fields.to_query
+        login = site['/api/v1/admin/login'].post post_fields.to_query
+        login = JSON.parse(login.body)
       rescue
         false
       else
-        true
+        token = login['data']
+        user_info = site['/api/v1/internal/admin'].get Authorization: "Bearer #{token}"
+        JSON.parse(user_info.body)
       end
     end
   end
