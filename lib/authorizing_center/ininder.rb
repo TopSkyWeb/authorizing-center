@@ -1,19 +1,30 @@
 module AuthorizingCenter
   # Checks the scope in the given environment and returns the associated failure app.
   class Ininder
-    def self.authorize?(username, password)
-      post_fields = {account: username, password: password}
-      site = RestClient::Resource.new(AuthorizingCenter.ininder_endpoint)
+    attr_reader :http_code, :response
+
+    def initialize(username, password)
+      @site = RestClient::Resource.new(AuthorizingCenter.ininder_endpoint)
+      @username = username
+      @password = password
+    end
+
+    def login
+      post_fields = { account: @username, password: @password }
       begin
-        login = site['/api/v1/admin/login'].post post_fields.to_query
-        login = JSON.parse(login.body)
-      rescue
-        false
+        login = @site['/api/v1/admin/login'].post(post_fields.to_query)
+        token = JSON.parse(login.body)['data']
+      rescue => exception
+        response = exception.response
       else
-        token = login['data']
-        user_info = site['/api/v1/internal/admin'].get Authorization: "Bearer #{token}"
-        JSON.parse(user_info.body)
+        response = @site['/api/v1/internal/admin'].get(Authorization: "Bearer #{token}")
       end
+      @http_code = response.code
+      @response = JSON.parse(response)
+    end
+
+    def authorize?
+       @http_code === 200
     end
   end
 end
