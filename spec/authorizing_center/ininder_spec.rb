@@ -17,7 +17,7 @@ RSpec.describe AuthorizingCenter::Ininder do
         with(body: {account: :foo, password: :bar}.to_query).
         to_return(status: 200, body: {data: 'success'}.to_json)
 
-    stub_request(:get, AuthorizingCenter.ininder_endpoint + '/api/v1/internal/admin').
+    stub_request(:get, AuthorizingCenter.ininder_endpoint + '/api/v2/internal/admin').
       to_return(status: 200, body: {data: 'success'}.to_json)
 
     user = AuthorizingCenter::Ininder.new('foo', 'bar')

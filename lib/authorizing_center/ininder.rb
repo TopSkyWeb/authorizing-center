@@ -17,7 +17,7 @@ module AuthorizingCenter
       rescue => exception
         response = exception.response
       else
-        response = @site['/api/v1/internal/admin'].get(Authorization: "Bearer #{token}")
+        response = @site['/api/v2/internal/admin'].get(Authorization: "Bearer #{token}")
       end
       @http_code = response.code
       @response = JSON.parse(response)
