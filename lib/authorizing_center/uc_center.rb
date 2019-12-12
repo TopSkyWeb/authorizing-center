@@ -1,28 +1,84 @@
+require 'byebug'
 require "symmetric-encryption"
 module AuthorizingCenter
   # Checks the scope in the given environment and returns the associated failure app.
-  module UcCenter
-    def self.authorize?(username, password, remote_ip)
-      site = RestClient::Resource.new(AuthorizingCenter.uc_center_endpoint)
-      string_wait_for_encrypt = {password: password, destime: Time.now.to_i, ip: remote_ip}.to_query
-      post_filed = {username: username, desurl: AuthorizingCenter::UcCenter.encrypt(string_wait_for_encrypt), m: 'api', a: 'getticket'}
-      respond = site.post post_filed.to_query
-      if UC_GET_TICKET_ERROR_CODE.has_key?(respond.body)
-        AuthorizingCenter.error_message = UC_GET_TICKET_ERROR_CODE[respond.body]
-        false
-      else
-        true
+  class UcCenter
+
+    UC_GET_TICKET_ERROR_CODE = {
+      '-1' => '帐号或密码错误',
+      '-2' => '帐号或密码错误',
+      '-3' => 'IP被封15分钟',
+      '-4' => '帐号被停用',
+      'time out!' => '令牌逾时，请重新开启APP在尝试一次'
+    }
+
+    attr_reader :http_code, :response, :ticket
+
+    def initialize(username, password, remote_ip)
+      @site = RestClient::Resource.new(AuthorizingCenter.uc_center_endpoint)
+      @username = username
+      @password = password
+      @remote_ip = remote_ip
+    end
+
+    def login
+      begin
+        response = @site.post(ticket_params)
+        if UC_GET_TICKET_ERROR_CODE.has_key?(response.body)
+          message = UC_GET_TICKET_ERROR_CODE[response.body]
+          @response = to_data_json(message)
+          @http_code = response.code
+          return false
+        else
+          @ticket = response.body
+          response = RestClient.get("#{AuthorizingCenter.uc_center_endpoint}?#{user_info_params.to_query}")
+        end
+      rescue => exception
+        response = exception.response
       end
+
+      @response = to_data_json(response.body)
+      @http_code = response.code
+
+      @http_code === 200 && @ticket ? @response : false
     end
 
-    def self.user_information(username)
-      url = "#{AuthorizingCenter.uc_center_endpoint}?#{{a: 'userinfo', m: 'api', username: username}.to_query}"
-      respond = RestClient.get url
-      user_info = JSON.parse respond.body
-      user_info
+    private
+
+    def to_data_json(string)
+      begin
+        data = JSON.parse(string)
+      rescue
+        data = string
+      end
+
+      data['data'] ? data : { data: data }.as_json
     end
 
-    def self.encrypt(str)
+    def ticket_params
+      {
+        username: @username,
+        desurl: desurl,
+        m: 'api',
+        a: 'getticket'
+      }
+    end
+
+    def user_info_params
+      {
+        username: @username,
+        m: 'api',
+        a: 'userinfo'
+      }
+    end
+
+    def desurl
+      str = {
+        password: @password,
+        destime: Time.now.to_i,
+        ip: @remote_ip
+      }.to_query
+
       # php base64 complies with RFC 1421  , rails base64 complies with RFC 2045, if include + , regenerate again
       loop do
         iv = OpenSSL::Random.random_bytes(16)

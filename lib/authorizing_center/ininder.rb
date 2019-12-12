@@ -10,21 +10,24 @@ module AuthorizingCenter
     end
 
     def login
-      post_fields = { account: @username, password: @password }
       begin
-        login = @site['/api/v1/admin/login'].post(post_fields.to_query)
+        login = @site['/api/v1/admin/login'].post(params)
         token = JSON.parse(login.body)['data']
+        response = @site['/api/v2/internal/admin'].get(Authorization: "Bearer #{token}")
       rescue => exception
         response = exception.response
-      else
-        response = @site['/api/v2/internal/admin'].get(Authorization: "Bearer #{token}")
       end
+
       @http_code = response.code
       @response = JSON.parse(response)
+
+      @http_code === 200 ? @response : false
     end
 
-    def authorize?
-       @http_code === 200
+    private
+
+    def params
+      { account: @username, password: @password }
     end
   end
 end

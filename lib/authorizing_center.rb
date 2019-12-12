@@ -6,14 +6,6 @@ module AuthorizingCenter
   autoload :UcCenter, 'authorizing_center/uc_center'
 
   # UC Get Ticket API Error Code
-  UC_GET_TICKET_ERROR_CODE = {
-      '-1' => '帐号或密码错误',
-      '-2' => '帐号或密码错误',
-      '-3' => 'IP被封15分钟',
-      '-4' => '帐号被停用',
-      'time out!' => '令牌逾时，请重新开启APP在尝试一次'
-  }
-
   # Uc Center Endpoint
   mattr_accessor :uc_center_endpoint
   @@uc_center_endpoint = nil
