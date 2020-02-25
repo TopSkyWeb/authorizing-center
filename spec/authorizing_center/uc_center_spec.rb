@@ -8,6 +8,22 @@ RSpec.describe AuthorizingCenter::UcCenter do
   let(:password) { 'password' }
   let(:ip) { '127.0.0.1' }
 
+  it 'return true when username available' do
+    username = 'wrong'
+    stub_request(:post, AuthorizingCenter.uc_center_endpoint)
+      .with(body: {
+        username: username,
+        aj: 1,
+        m: 'user',
+        a: 'usernamecheck'
+      })
+      .to_return(status: 200, body: '1')
+
+    name_available = AuthorizingCenter::UcCenter.name_available?(username)
+
+    expect(name_available).to eq(true)
+  end
+
   it 'return false when wrong account' do
     username = 'wrong'
     user = AuthorizingCenter::UcCenter.new(username, password, ip)
