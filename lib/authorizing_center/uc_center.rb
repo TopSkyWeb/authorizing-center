@@ -14,15 +14,25 @@ module AuthorizingCenter
     attr_reader :http_code, :response, :ticket
 
     def initialize(username, password, remote_ip)
-      @site = RestClient::Resource.new(AuthorizingCenter.uc_center_endpoint)
       @username = username
       @password = password
       @remote_ip = remote_ip
     end
 
+    def self.name_available?(name)
+      response = site.post({
+        username: name,
+        aj: 1,
+        m: 'user',
+        a: 'usernamecheck'
+      })
+
+      response.body.to_i == 1
+    end
+
     def login
       begin
-        response = @site.post(ticket_params)
+        response = site.post(ticket_params)
         if UC_GET_TICKET_ERROR_CODE.has_key?(response.body)
           message = UC_GET_TICKET_ERROR_CODE[response.body]
           @response = to_data_json(message)
@@ -43,6 +53,10 @@ module AuthorizingCenter
     end
 
     private
+
+    def site
+      @site ||= RestClient::Resource.new(AuthorizingCenter.uc_center_endpoint)
+    end
 
     def to_data_json(string)
       begin
